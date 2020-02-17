@@ -10,7 +10,28 @@ import Foundation
 
 class BookController {
     var books: [Book] = []
-    var readlingListURL: URL? {
-        //filemanagerthing, gotta look back to an old project/lecture! :D
+    private var readlingListURL: URL? {
+        let fileManager = FileManager.default //
+        guard let documents = FileManager.urls(for: .documentsDirectory, in: .userDomainMask).first else { return nil }
+        
+        
+        return documents.appendingPathComponent("ReadingList.plist")
     }
+    
+    init() {
+        saveFromPersistentStore()
+    }
+    
+    func saveToPersistentStore() {
+       guard let url = persistentFileURL else { return }
+            
+            do {
+                let encoder = PropertyListEncoder()
+                let data = try encoder.encode(books)
+                try data.write(to: url)
+            } catch {
+                print("Error saving stars data: \(error).")
+            }
+            
+        }
 }
